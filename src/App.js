@@ -2,41 +2,42 @@ import React, { Component } from 'react';
 import './App.css';
 import Movie from './Movie.js';
 
-const twiceMember = [
-  {
-    name: 'sana',
-    photo: 'https://pds.joins.com/news/component/htmlphoto_mmdata/201703/03/6e592a4e-7c36-4ae4-9532-9af7bfb11d68.jpg'
-  },
-  {
-    name: 'mina',
-    photo: 'https://pbs.twimg.com/media/C6J5sQrVMAA1wH6.jpg'
-  },
-  {
-    name: 'jeongyeon',
-    photo: 'https://pds.joins.com/news/component/ilgan_isplus/201808/30/2018083017483094900.jpeg'
-  },
-  {
-    name: 'momo',
-    photo: 'http://www.getnews.co.kr/news/photo/201804/63938_57095_5731.jpg'
-  }
-]
-
 class App extends Component {
-  componentWillMount() {
-    console.log('Will Mount');
+  // Render: componentWillMount() -> render() -> componentDidMount()
+  // Update: componentWillReceiveProps() -> shouldComponentUpdate() -> componentWillUpdate() -> render() -> componentDidUpdate()
+  state = {}
+
+  _renderMovies = () => {
+    const movies = this.state.movies.map(movie => {
+      return <Movie title={movie.title} poster={movie.large_cover_image} key={movie.id} />
+    })
+    return movies
   }
+
+  _getMovies = async () => {
+    const movies = await this._callApi()
+    this.setState({
+      movies
+    })
+  }
+
+  _callApi = () => {
+    return fetch('https://yts.am/api/v2/list_movies.json?sort_by=download_count')
+    .then(chocolate => chocolate.json())
+    .then(pepper => pepper.data.movies)
+    .catch(err => console.log(err))
+  }
+
   render() {
-    console.log('render');
     return (
       <div className="App">
-        {twiceMember.map((twice, index) => {
-          return (<Movie name={twice.name} photo={twice.photo} key={index} />);
-        })}
+        {this.state.movies ? this._renderMovies() : 'Loading'}
       </div>
     );
   }
+
   componentDidMount() {
-    console.log('Did Mount');
+    this._getMovies();
   }
 }
 
