@@ -22,14 +22,21 @@ const twiceMember = [
 ]
 
 class App extends Component {
+  componentWillMount() {
+    console.log('Will Mount');
+  }
   render() {
+    console.log('render');
     return (
       <div className="App">
-        {twiceMember.map(twice => {
-          return (<Movie name={twice.name} photo={twice.photo} />);
+        {twiceMember.map((twice, index) => {
+          return (<Movie name={twice.name} photo={twice.photo} key={index} />);
         })}
       </div>
     );
+  }
+  componentDidMount() {
+    console.log('Did Mount');
   }
 }
 
